@@ -8,6 +8,7 @@ here::i_am("R/load-db.R")
 app_db <- dbConnect(RSQLite::SQLite(), here::here("database.db"))
 
 acs_vars <- c(
+  "pop_total" = "B17001_001",
   "median_gross_rent" = "B25064_001",
   "median_hh_income" = "B19013_001",
   "housing_units_total" = "B25003_001",
@@ -47,13 +48,13 @@ acs_dta <- get_acs("place", variables = acs_vars, year = 2021) %>%
 nzlud <- data.table::fread("https://raw.githubusercontent.com/mtmleczko/nzlud/main/nzlud_muni.csv") %>%
   mutate(GEOID = stringr::str_pad(GEOID, 7, side = "left", pad = "0"))
 
-nzlud_acs <- left_join(
+nzlud_acs <- inner_join(
   nzlud,
   acs_dta,
   by = "GEOID"
 )
 
-dbWriteTable(app_db, "acs_zoning", nzlud_acs)
+dbWriteTable(app_db, "acs_zoning", nzlud_acs, overwrite = TRUE)
 
 dbDisconnect(app_db)
 
