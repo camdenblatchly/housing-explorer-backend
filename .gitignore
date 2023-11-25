@@ -1,0 +1,16 @@
+# misc
+venv
+.DS_Store
+node_modules
+.serverless
+
+# DB files (GIT Large file tracking)
+*.db
+
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.Rprofile
+*.Rproj

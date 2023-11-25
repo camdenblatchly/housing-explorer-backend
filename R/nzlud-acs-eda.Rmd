@@ -1,0 +1,48 @@
+---
+title: "nzlud-acs-eda"
+output: html_document
+---
+
+```{r}
+
+library(DBI)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+```
+
+```{r}
+
+app_db <- dbConnect(RSQLite::SQLite(), here::here("database.db"))
+
+dta <- RSQLite::dbReadTable(app_db, "acs_zoning", "SELECT *")
+
+dbDisconnect(app_db)
+
+```
+
+
+```{r}
+dta %>%
+  mutate(
+    value = ifelse (max_den_cat1 == 1, "Yes", "No")
+  ) %>%
+  ggplot(aes(x = rent_burden, y = value)) +
+  ggbeeswarm::geom_beeswarm(
+    size = 1,
+    alpha = 0.4,
+    cex = .8
+  )
+
+```
+
+
+```{r}
+
+dta %>%
+ggplot(aes(x = zri_up_st, y = rent_burden)) +
+  geom_point(color = "blue", size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, color = "red")
+
+```
